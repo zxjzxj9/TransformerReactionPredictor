@@ -12,10 +12,20 @@ class USPatent(Dataset):
     def __init__(self, datafile):
         super().__init__()
         self.datafile = datafile
-        self.csv = pd.read_csv(datafile)
+        self.csv = pd.read_csv(datafile, sep='\t', comment='#', 
+                               header=0, error_bad_lines=False, 
+                               warn_bad_lines=True)\
+                    .dropna(subset=["Source", "Target"])
+        
+        # self.csv.dropna(subset=["Source", "Target"])
+        # print(self.csv)
+        # item = self.csv.iloc[3]
+        # print(item["Source"])
+        # print(item["Target"])
+        # print(self.csv.iloc[2])
     
     def __len__(self):
-        return 0
+        return len(self.csv)
 
     def __getitem__(self, idx):
         return None
