@@ -10,3 +10,12 @@ def smi_tokenizer(smi):
     tokens = [token for token in regex.findall(smi)]
     assert smi == ''.join(tokens)
     return ' '.join(tokens)
+
+class Vocab(object):
+    def __init__(self):
+        self.vocab = dict()
+    
+    def add(self, word):
+        self.vocab[word] = 1 if word not in self.vocab else self.vocab[word] + 1
+
+    
