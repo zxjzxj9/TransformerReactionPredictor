@@ -18,7 +18,6 @@ class USPatent(Dataset):
                                header=0, error_bad_lines=False, 
                                warn_bad_lines=True)\
                     .dropna(subset=["Source", "Target"]) # type: pd.DataFrame
-
         self.vocab = Vocab()
         if not os.path.exists(vocab_path):
             print("Vocabulary file not existing, try building one...")
@@ -28,10 +27,14 @@ class USPatent(Dataset):
                 for v in rec["Target"].split():
                     self.vocab.add(v)
             print("Saving vocabulary to: {}".format(vocab_path))
+            self.vocab.build()
             self.vocab.save(vocab_path)
         else:
             print("Loading vocabulary from: {}".format(vocab_path))
-            self.vocab = Vocab.load(vocab_path)
+            self.vocab = Vocab.load(vocab_path) # type: Vocab
+        # print(self.vocab.token_to_idx('<PAD>'))
+        # print(self.vocab.token_to_idx('>'))
+        # print(self.vocab.idx_to_token(0))
         print(self.vocab)
 
     def __len__(self):
@@ -42,6 +45,22 @@ class USPatent(Dataset):
         src = item["Source"]
         tgt = item["Target"]
 
+        sos = self.vocab.token_to_idx('<SOS>')
+        eos = self.vocab.token_to_idx('<EOS>')
+        go = self.vocab.token_to_idx('<GO>')
+
+        src_ret = [sos]
+        for token in src.split():
+            src_ret.append(self.vocab.token_to_idx(token))
+        src_ret.append(eos)
+
+        tgt_ret = [go]
+        for token in tgt.split():
+            tgt_ret.append(self.vocab.token_to_idx(token))
+        tgt_ret.append(eos)
+
+        return src_ret, tgt_ret
 
 if __name__ == "__main__":
     data = USPatent("~/HDD/ChemicalReaction/US_patents_1976-Sep2016_1product_reactions_train.csv")
+    print(data[0])

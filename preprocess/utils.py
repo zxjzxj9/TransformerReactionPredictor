@@ -17,14 +17,15 @@ def smi_tokenizer(smi):
 class Vocab(object):
     def __init__(self):
         self.vocab = {
-            "<UNK>": 1,
-            "<GO>": 1,
-            "<EOS>": 1,
             "<PAD>": 1,
+            "<UNK>": 1,
+            "<SOS>": 1,
+            "<EOS>": 1,
+            "<GO>" : 1,
         }
 
-        self.vdict = {}
-        self.idict = {}
+        self.vdict = {} # type: dict
+        self.idict = {} # type: dict
     
     def add(self, word):
         self.vocab[word] = 1 \
@@ -32,9 +33,10 @@ class Vocab(object):
             else self.vocab[word] + 1
     
     def build(self):
+        print("Building Dictionary...")
         voc = list(self.vocab.keys())
-        self.vdict = zip(voc, range(len(voc)))
-        self.idict = zip(range(len(voc)), voc)
+        self.vdict = dict(zip(voc, range(len(voc))))
+        self.idict = dict(zip(range(len(voc)), voc))
 
     def idx_to_token(self, idx):
         if idx not in self.idict:
