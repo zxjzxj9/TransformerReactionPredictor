@@ -13,9 +13,28 @@ def smi_tokenizer(smi):
 
 class Vocab(object):
     def __init__(self):
-        self.vocab = dict()
+        self.vocab = {
+            "<UNK>": 0,
+            "<GO>": 1,
+            "<EOS>": 2,
+            "<PAD>": 3,
+        }
+
+        self.vdict = {}
+        self.idict = {}
     
     def add(self, word):
-        self.vocab[word] = 1 if word not in self.vocab else self.vocab[word] + 1
-
+        self.vocab[word] = 1 \
+            if word not in self.vocab \
+            else self.vocab[word] + 1
     
+    def build(self):
+        pass
+
+    def idx_to_token(self, idx):
+        pass
+
+    def token_to_idx(self, token):
+        if token not in self.vocab:
+            raise RuntimeError("Token Lookup Error: No such token {}".format(token))
+
