@@ -51,7 +51,7 @@ class Vocab(object):
             pickle.dump(self, f)
 
     def __str__(self):
-        s = "Vocabulary of size: {}\n".format(len(self.vocab))
+        s = "Vocabulary size: {}\n".format(len(self.vocab))
         s += "{ \n"
         sample = random.sample(self.vocab.keys(), 5)
         for k in sample:

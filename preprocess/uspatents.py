@@ -19,12 +19,6 @@ class USPatent(Dataset):
                                warn_bad_lines=True)\
                     .dropna(subset=["Source", "Target"]) # type: pd.DataFrame
 
-        # self.csv.dropna(subset=["Source", "Target"])
-        # print(self.csv)
-        # item = self.csv.iloc[3]
-        # print(item["Source"])
-        # print(item["Target"])
-        # print(self.csv.iloc[2])
         self.vocab = Vocab()
         if not os.path.exists(vocab_path):
             print("Vocabulary file not existing, try building one...")
@@ -47,7 +41,7 @@ class USPatent(Dataset):
         item = self.csv.iloc[idx]
         src = item["Source"]
         tgt = item["Target"]
-        
+
 
 if __name__ == "__main__":
     data = USPatent("~/HDD/ChemicalReaction/US_patents_1976-Sep2016_1product_reactions_train.csv")
