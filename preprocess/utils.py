@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 import pickle
+import random
 
 def smi_tokenizer(smi):
     """
@@ -45,15 +46,23 @@ class Vocab(object):
             raise RuntimeError("Token Lookup Error: No such token {}".format(token))
         return self.vdict[token]
 
-    def pickle(self, path):
-        with open(path, "wb", encoding='utf-8') as f:
+    def save(self, path):
+        with open(path, "wb") as f:
             pickle.dump(self, f)
-    
-    @staticmethod
-    def unipckle(path):
-        with open(path, "rb", encoding='utf-8') as f:
-            return pickle.load(f)
 
+    def __str__(self):
+        s = "Vocabulary of size: {}\n".format(len(self.vocab))
+        s += "{ \n"
+        sample = random.sample(self.vocab.keys(), 5)
+        for k in sample:
+            s += "    {:12s}:{:06d}\n".format(k, self.vocab[k])
+        s += "    ...\n}"
+        return s
+
+    @staticmethod
+    def load(path):
+        with open(path, "rb") as f:
+            return pickle.load(f)
 
 if __name__ == "__main__":
     pass
