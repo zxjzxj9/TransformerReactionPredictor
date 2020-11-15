@@ -6,6 +6,7 @@
 
 import os
 import pandas as pd
+from torch._C import ScriptFunction
 import tqdm
 from torch.utils.data import Dataset
 from .utils import Vocab
@@ -28,11 +29,24 @@ class USPatent(Dataset):
         self.vocab = Vocab()
         if not os.path.exists(vocab_path):
             print("Vocabulary file not existing, try building one...")
+            srclen = []
+            tgtlen = []
             for _, rec in tqdm.tqdm(self.csv.iterrows(), total=len(self.csv)):
+                cnt = 0
                 for v in rec["Source"].split():
                     self.vocab.add(v)
+                    cnt += 1
+                srclen.append(cnt)
+                cnt = 0
                 for v in rec["Target"].split():
                     self.vocab.add(v)
+                    cnt += 1
+                tgtlen.append(cnt)
+            print(("Summary: \n" + \
+                   "SrcLen Max: {:6d}, Avg: {:12.6f}\n" + \
+                   "TgtLen Max: {:6d}, Avg: {:12.6f}\n") \
+                        .format(max(srclen), sum(srclen)/len(srclen),
+                                max(tgtlen), sum(tgtlen)/len(tgtlen)))
             print("Saving vocabulary to: {}".format(vocab_path))
             self.vocab.build()
             self.vocab.save(vocab_path)
