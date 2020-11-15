@@ -8,9 +8,16 @@ import os
 import pandas as pd
 import tqdm
 from torch.utils.data import Dataset
-from utils import Vocab
+from .utils import Vocab
 
 class USPatent(Dataset):
+    """  Class to read the USPatent dataset (1976-2016)
+        Dataset property: 
+            - Vocabulary ~ 331
+            - Src Maxlen: Avglen:  
+            - Tgt Maxlen: Avglen:
+
+    """
     def __init__(self, datafile, vocab_path="./vocab.pkl"):
         super().__init__()
         self.datafile = datafile
