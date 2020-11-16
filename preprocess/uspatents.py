@@ -15,11 +15,11 @@ class USPatent(Dataset):
     """  Class to read the USPatent dataset (1976-2016)
         Dataset property: 
             - Vocabulary ~ 331
-            - Src Maxlen: Avglen:  
-            - Tgt Maxlen: Avglen:
-
+            - Src Maxlen: 876 Avglen:  51.8
+            - Tgt Maxlen: 514 Avglen: 41.5
+            (It suggests most of the reaction is Combination reaction)
     """
-    def __init__(self, datafile, vocab_path="./vocab.pkl"):
+    def __init__(self, datafile, vocab_path="./vocab.pkl", maxlen=64):
         super().__init__()
         self.datafile = datafile
         self.csv = pd.read_csv(datafile, sep='\t', comment='#', 
@@ -27,6 +27,8 @@ class USPatent(Dataset):
                                warn_bad_lines=True)\
                     .dropna(subset=["Source", "Target"]) # type: pd.DataFrame
         self.vocab = Vocab()
+        self.maxlen = maxlen
+        
         if not os.path.exists(vocab_path):
             print("Vocabulary file not existing, try building one...")
             srclen = []
