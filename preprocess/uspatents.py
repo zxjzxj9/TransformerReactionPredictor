@@ -28,7 +28,7 @@ class USPatent(Dataset):
                     .dropna(subset=["Source", "Target"]) # type: pd.DataFrame
         self.vocab = Vocab()
         self.maxlen = maxlen
-        
+
         if not os.path.exists(vocab_path):
             print("Vocabulary file not existing, try building one...")
             srclen = []
@@ -69,17 +69,26 @@ class USPatent(Dataset):
         tgt = item["Target"]
 
         sos = self.vocab.token_to_idx('<SOS>')
+        pad = self.vocab.token_to_idx('<PAD>')
         eos = self.vocab.token_to_idx('<EOS>')
         go = self.vocab.token_to_idx('<GO>')
 
         src_ret = [sos]
         for token in src.split():
             src_ret.append(self.vocab.token_to_idx(token))
+        if len(src_ret) < self.maxlen:
+            for _ in range(self.maxlen-len(src_ret)): src_ret.append(pad)
+        else:
+            src_ret = src_ret[:self.maxlen]
         src_ret.append(eos)
 
         tgt_ret = [go]
         for token in tgt.split():
             tgt_ret.append(self.vocab.token_to_idx(token))
+        if len(tgt_ret) < self.maxlen:
+            for _ in range(self.maxlen-len(tgt_ret)): tgt_ret.append(pad)
+        else:
+            tgt_ret = tgt_ret[:self.maxlen]
         tgt_ret.append(eos)
 
         return src_ret, tgt_ret

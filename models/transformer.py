@@ -32,12 +32,27 @@ class SinEmbedding(nn.Module):
 
 
 class TRPModel(nn.Module):
+    """
+
+    """
     
-    def __init__(self, nfeat, nlayers, nff, act_fn='relu'):
+    def __init__(self, ntokens, nfeat, nhead, nlayer, nff, maxlen=64, dropout=0.1, act_fn='relu'):
         super().__init__()
 
-    def forward(self, x):
-        pass
+        self.token_embed = nn.Embedding(ntokens, nfeat)
+        self.pos_embed = PosEmbedding(maxlen, nfeat)
+
+        encoder_layer = nn.TransformerEncoderLayer(nfeat, nhead, nff, dropout, act_fn)
+        self.encoder = nn.TransformerEncoder(encoder_layer, nlayer, nn.LayerNorm(nfeat))
+        decoder_layer = nn.TransformerDecoderLayer(nfeat, nhead, nff, dropout, act_fn)
+        self.decoder = nn.TransformerDecoder(decoder_layer, nlayer, nn.LayerNorm(nfeat))
+
+    def forward(self, src, tgt = None):
+        
+        if self.training:
+            pass
+        else:
+            pass
 
 
 if __name__ == "__main__":
