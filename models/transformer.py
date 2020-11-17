@@ -32,8 +32,11 @@ class SinEmbedding(nn.Module):
 
 
 class TRPModel(nn.Module):
-    """
-
+    """ Using TRP mode to predict the reaction from src molecule to tgt molecule
+        token_embed: token embedding
+        pos_embed: positional embedding
+        notice PyTorch use SxNxE, TxNxE for source/target layout,
+            and NxS, NxT as padding mask layout
     """
     
     def __init__(self, ntokens, nfeat, nhead, nlayer, nff, maxlen=64, dropout=0.1, act_fn='relu'):
@@ -47,10 +50,16 @@ class TRPModel(nn.Module):
         decoder_layer = nn.TransformerDecoderLayer(nfeat, nhead, nff, dropout, act_fn)
         self.decoder = nn.TransformerDecoder(decoder_layer, nlayer, nn.LayerNorm(nfeat))
 
-    def forward(self, src, tgt = None):
+    def forward(self, src, src_mask, tgt = None, tgt_mask = None):
         
         if self.training:
-            pass
+            src_token_feat = self.token_embed(src)
+            src_pos_feat = self.pos_embed(src)
+            feat = src_token_feat + src_pos_feat
+            memory = self.encoder(feat, src_key_padding_mask = src_mask)
+            feat = self.decoder(tgt, memory, tgt_key_padding_mask = tgt_mask, 
+                memory_key_padding_nask = src_mask)
+            return feat
         else:
             pass
 
