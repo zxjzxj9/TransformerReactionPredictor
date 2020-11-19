@@ -65,4 +65,4 @@ class TRPModel(nn.Module):
 
 
 if __name__ == "__main__":
-    pass
+    model = TRPModel(345, 256, 8, 3, 1024)
