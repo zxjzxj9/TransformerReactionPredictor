@@ -76,23 +76,23 @@ class USPatent(Dataset):
         src_ret = [sos]
         for token in src.split():
             src_ret.append(self.vocab.token_to_idx(token))
+        src_ret.append(eos)
         if len(src_ret) < self.maxlen:
             for _ in range(self.maxlen-len(src_ret)): src_ret.append(pad)
         else:
             src_ret = src_ret[:self.maxlen]
-        src_ret.append(eos)
 
         tgt_ret = [go]
         for token in tgt.split():
             tgt_ret.append(self.vocab.token_to_idx(token))
+        tgt_ret.append(eos)
         if len(tgt_ret) < self.maxlen:
             for _ in range(self.maxlen-len(tgt_ret)): tgt_ret.append(pad)
         else:
             tgt_ret = tgt_ret[:self.maxlen]
-        tgt_ret.append(eos)
 
         return src_ret, tgt_ret
 
 if __name__ == "__main__":
     data = USPatent("~/HDD/ChemicalReaction/US_patents_1976-Sep2016_1product_reactions_train.csv")
-    print(data[0])
+    print(len(data[0][0]), len(data[0][1]))

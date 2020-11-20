@@ -55,7 +55,7 @@ class TRPModel(nn.Module):
         if self.training:
             src_token_feat = self.token_embed(src)
             src_pos_feat = self.pos_embed(src)
-            feat = src_token_feat + src_pos_feat
+            feat = src_token_feat + src_pos_feat # add two embeddings
             memory = self.encoder(feat, src_key_padding_mask = src_mask)
             feat = self.decoder(tgt, memory, tgt_key_padding_mask = tgt_mask, 
                 memory_key_padding_nask = src_mask)
@@ -66,3 +66,9 @@ class TRPModel(nn.Module):
 
 if __name__ == "__main__":
     model = TRPModel(345, 256, 8, 3, 1024)
+    src = torch.randint(4, 345, (64, 8))
+    tgt = torch.randint(4, 345, (64, 8))
+    src_mask = (src > 0).t()
+    tgt_mask = (tgt > 0).t()
+    pred = model(src, src_mask, tgt, tgt_mask)
+    print(pred.shape)
