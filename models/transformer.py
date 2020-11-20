@@ -43,7 +43,8 @@ class TRPModel(nn.Module):
         super().__init__()
 
         self.token_embed = nn.Embedding(ntokens, nfeat)
-        self.pos_embed = PosEmbedding(maxlen, nfeat)
+        self.src_pos_embed = PosEmbedding(maxlen, nfeat)
+        self.tgt_pos_embed = PosEmbedding(maxlen, nfeat)
 
         encoder_layer = nn.TransformerEncoderLayer(nfeat, nhead, nff, dropout, act_fn)
         self.encoder = nn.TransformerEncoder(encoder_layer, nlayer, nn.LayerNorm(nfeat))
@@ -53,12 +54,17 @@ class TRPModel(nn.Module):
     def forward(self, src, src_mask, tgt = None, tgt_mask = None):
         
         if self.training:
-            src_token_feat = self.token_embed(src)
-            src_pos_feat = self.pos_embed(src)
-            feat = src_token_feat + src_pos_feat # add two embeddings
-            memory = self.encoder(feat, src_key_padding_mask = src_mask)
-            feat = self.decoder(tgt, memory, tgt_key_padding_mask = tgt_mask, 
-                memory_key_padding_nask = src_mask)
+            src_token_feat = self.token_embed(src) # src SxN
+            tgt_token_feat = self.token_embed(tgt) # tgt SxN
+            sz, nb = src.size() 
+            idx = torch.arange(sz).unsqueeze(-1) # Sx1
+            src_pos_feat = self.src_pos_embed(idx)
+            tgt_pos_feat = self.tgt_pos_embed(idx)
+            src_feat = src_token_feat + src_pos_feat # add two embeddings
+            tgt_feat = tgt_token_feat + tgt_pos_feat 
+            memory = self.encoder(src_feat, src_key_padding_mask = src_mask)
+            feat = self.decoder(tgt_feat, memory, tgt_key_padding_mask = tgt_mask, 
+                memory_key_padding_mask = src_mask)
             return feat
         else:
             pass
@@ -66,8 +72,9 @@ class TRPModel(nn.Module):
 
 if __name__ == "__main__":
     model = TRPModel(345, 256, 8, 3, 1024)
-    src = torch.randint(4, 345, (64, 8))
-    tgt = torch.randint(4, 345, (64, 8))
+    src = torch.randint(0, 344, (64, 8))
+    tgt = torch.randint(0, 344, (64, 8))
+    # print(src, tgt)
     src_mask = (src > 0).t()
     tgt_mask = (tgt > 0).t()
     pred = model(src, src_mask, tgt, tgt_mask)
