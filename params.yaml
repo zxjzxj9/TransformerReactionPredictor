@@ -3,5 +3,9 @@
 model_config:
   max_len: 64
 
+
+train_config:
+  lr: 1e-3
+
 data_config:
   vocab_file: "./vocab.pkl"
