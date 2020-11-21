@@ -20,3 +20,5 @@ if __name__ == "__main__":
         pass
     elif args.mode == "predict":
         pass
+    else:
+        print("Invalid mode argument: {}, exiting...".format(args.mode))
