@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 import yaml
+from preprocess import Vocab
 from models import TRPModel
 
 class Config:
@@ -16,5 +17,6 @@ class Config:
 
 def create_model_from_config(config):
     model_config = config["model_config"]
+    data_config = config["data_config"]
 
     

@@ -18,7 +18,7 @@ def predict():
 
 if __name__ == "__main__":
     conf = Config(args.config_file)
-    model = create_model_from_config(conf)
+    model, dataset = create_model_from_config(conf)
     
     if args.mode == "train":
         pass

@@ -1,7 +1,11 @@
 # TRP Model configuration file
 
 model_config:
-  max_len: 64
+  max_len: 64 # max sentence length
+  nfeat: 512 # number of features
+  nhead: 8 # number of attention heads
+  nlayer: 6 # number of attention layers
+  nff: 2048 # number of feed forward layer
 
 
 train_config:
