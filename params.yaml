@@ -6,10 +6,13 @@ model_config:
   nhead: 8 # number of attention heads
   nlayer: 6 # number of attention layers
   nff: 2048 # number of feed forward layer
-
+  dropout: 0.1 # drop ratio
+  act_fn: 'relu' # activation function
 
 train_config:
   lr: 1e-3
+  optimizer: 'adam'
+  
 
 data_config:
   vocab_file: "./vocab.pkl"
