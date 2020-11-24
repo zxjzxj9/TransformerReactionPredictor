@@ -27,6 +27,9 @@ class Vocab(object):
         self.vdict = {} # type: dict
         self.idict = {} # type: dict
     
+    def __len__(self):
+        return len(self.vdict)
+    
     def add(self, word):
         self.vocab[word] = 1 \
             if word not in self.vocab \

@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 import yaml
+import models
 from preprocess import Vocab
 from models import TRPModel
 import pickle
@@ -22,3 +23,8 @@ def create_model_from_config(config):
 
     with open(data_config["vocab_file"], "rw") as f:
         vocab = pickle.load(f)
+
+    model = TRPModel(len(vocab), model_config["nfeat"], 
+                     model_config["nhead"], model_config["nlayer"],
+                     model_config["nff"], model_config["max_len"],
+                     model_config["dropout"], model_config["act_fn"])
