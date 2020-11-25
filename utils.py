@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 import yaml
+from yaml import CSafeLoader
 import models
 from preprocess import Vocab
 from models import TRPModel
@@ -12,7 +13,7 @@ class Config:
 
         self.folder = folder
         with open(folder, "r") as f:
-            self.config = yaml.load(f)
+            self.config = yaml.load(f, Loader=CSafeLoader)
 
     def __getitem__(self, key):
         return self.config[key]
@@ -21,10 +22,16 @@ def create_model_from_config(config):
     model_config = config["model_config"]
     data_config = config["data_config"]
 
-    with open(data_config["vocab_file"], "rw") as f:
+    with open(data_config["vocab_file"], "rb") as f:
         vocab = pickle.load(f)
 
     model = TRPModel(len(vocab), model_config["nfeat"], 
                      model_config["nhead"], model_config["nlayer"],
                      model_config["nff"], model_config["max_len"],
                      model_config["dropout"], model_config["act_fn"])
+
+    return vocab, model
+
+if __name__ == "__main__":
+    config = Config("./params.yaml")
+    print(create_model_from_config(config))

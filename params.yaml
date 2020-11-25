@@ -10,6 +10,8 @@ model_config:
   act_fn: 'relu' # activation function
 
 train_config:
+  use_cuda: True
+  use_fp16: True
   lr: 1e-3
   optimizer: 'adam'
 
