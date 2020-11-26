@@ -3,9 +3,10 @@
 import yaml
 from yaml import CSafeLoader
 import models
-from preprocess import Vocab
+from preprocess import Vocab, USPatent
 from models import TRPModel
 import pickle
+# from bleu import list_bleu
 
 class Config:
     def __init__(self, folder):
@@ -31,6 +32,10 @@ def create_model_from_config(config):
                      model_config["dropout"], model_config["act_fn"])
 
     return vocab, model
+
+def create_dateset_from_config(config):
+    train_data = USPatent()
+
 
 if __name__ == "__main__":
     config = Config("./params.yaml")

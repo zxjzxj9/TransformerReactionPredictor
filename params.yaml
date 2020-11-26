@@ -17,3 +17,6 @@ train_config:
 
 data_config:
   vocab_file: "./vocab.pkl"
+  train_file: "~/HDD/ChemicalReaction/US_patents_1976-Sep2016_1product_reactions_train.csv"
+  valid_file: "~/HDD/ChemicalReaction/US_patents_1976-Sep2016_1product_reactions_valid.csv"
+  test_file: "~/HDD/ChemicalReaction/US_patents_1976-Sep2016_1product_reactions_test.csv"

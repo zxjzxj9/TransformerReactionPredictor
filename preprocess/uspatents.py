@@ -6,7 +6,6 @@
 
 import os
 import pandas as pd
-from torch._C import ScriptFunction
 import tqdm
 from torch.utils.data import Dataset
 from .utils import Vocab
