@@ -34,7 +34,7 @@ def create_model_from_config(config):
     return vocab, model
 
 def create_dateset_from_config(config):
-    train_data = USPatent()
+    train_data = USPatent(config[])
 
 
 if __name__ == "__main__":
