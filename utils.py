@@ -1,11 +1,13 @@
 #! /usr/bin/env python
 
+from torch._C import ErrorReport
 import yaml
 from yaml import CSafeLoader
 import models
 from preprocess import Vocab, USPatent
 from models import TRPModel
 import pickle
+import torch.optim as optim
 # from bleu import list_bleu
 
 class Config:
@@ -31,7 +33,23 @@ def create_model_from_config(config):
                      model_config["nff"], model_config["max_len"],
                      model_config["dropout"], model_config["act_fn"])
 
-    return vocab, model
+    return model, vocab
+
+def create_optimizer_from_config(config, model):
+    optimizer = None
+
+    train_config = config["train_config"]
+
+    if train_config["use_cuda"]:
+        model.cuda()
+    
+    if train_config["optimizer"] == "adam":
+        optimizer = optim.Adam(lr=train_config["lr"])
+    else:
+        raise RuntimeError("Unsupported error: {}"\
+            .format(train_config["optimizer"]))
+
+    return model, optimizer
 
 def create_dateset_from_config(config):
     train_data = USPatent(config["train_file"])

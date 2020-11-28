@@ -3,7 +3,9 @@
 import os
 import sys
 import argparse
-from .utils import Config, create_model_from_config
+from .utils import Config, \
+    create_model_from_config, \
+    create_dateset_from_config
 
 parser = argparse.ArgumentParser("Transformer Reaction Predictor Argument Parser")
 parser.add_argument("-c", "--config-file", type="str", default="params.yaml", help="Config file path")
@@ -18,7 +20,8 @@ def predict():
 
 if __name__ == "__main__":
     conf = Config(args.config_file)
-    model, dataset = create_model_from_config(conf)
+    train_data, valid_data, test_data = create_dateset_from_config(conf)
+    model, vocab = create_model_from_config(conf)
     
     if args.mode == "train":
         pass
