@@ -14,6 +14,8 @@ train_config:
   use_fp16: True
   lr: 1e-3
   optimizer: 'adam'
+  opt_level: 'O1'
+  checkpoint: 'latest.pt'
 
 data_config:
   vocab_file: "./vocab.pkl"

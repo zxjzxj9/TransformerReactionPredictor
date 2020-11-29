@@ -56,6 +56,9 @@ def create_optimizer_from_config(config, model):
             
     return model, optimizer
 
+def save_checkpoints(model, optimizer=None, niters=0):
+    pass
+
 def load_checkpoints(model, optimizer=None):
     pass
 
