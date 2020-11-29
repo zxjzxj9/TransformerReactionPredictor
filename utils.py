@@ -56,6 +56,9 @@ def create_optimizer_from_config(config, model):
             
     return model, optimizer
 
+def load_checkpoints(model, optimizer=None):
+    pass
+
 def create_dateset_from_config(config):
     train_data = USPatent(config["train_file"])
     valid_data = USPatent(config["valid_file"])
