@@ -8,6 +8,7 @@ from preprocess import Vocab, USPatent
 from models import TRPModel
 import pickle
 import torch.optim as optim
+from apex import amp
 # from bleu import list_bleu
 
 class Config:
@@ -42,13 +43,17 @@ def create_optimizer_from_config(config, model):
 
     if train_config["use_cuda"]:
         model.cuda()
-    
+
     if train_config["optimizer"] == "adam":
         optimizer = optim.Adam(lr=train_config["lr"])
     else:
         raise RuntimeError("Unsupported error: {}"\
             .format(train_config["optimizer"]))
 
+    if train_config["use_fp16"]:
+        model, optimizer = amp.initialize(model, optimizer,
+            opt_level=train_config["opt_level"])
+            
     return model, optimizer
 
 def create_dateset_from_config(config):
