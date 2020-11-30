@@ -3,10 +3,11 @@
 from torch._C import ErrorReport
 import yaml
 from yaml import CSafeLoader
-import models
+# import models
 from preprocess import Vocab, USPatent
 from models import TRPModel
 import pickle
+import torch
 import torch.optim as optim
 from apex import amp
 # from bleu import list_bleu
@@ -56,11 +57,20 @@ def create_optimizer_from_config(config, model):
             
     return model, optimizer
 
-def save_checkpoints(model, optimizer=None, niters=0):
-    pass
+def save_checkpoints(model, path, optimizer=None, niters=0):
+    torch.save({
+        "model": model.state_dict(),
+        "optimizer": optimizer,
+        "amp": amp,
+        "niters": niters,
+    }, path)
 
-def load_checkpoints(model, optimizer=None):
-    pass
+def load_checkpoints(model, path, optimizer=None):
+    state = torch.load(path, map_location=torch.device('cpu'))
+    model.load_state_dict(state["model"])
+    if optimizer: optimizer.load_state_dict(state["optimizer"])
+    if state["amp"] is not None: amp.load_state_dict(state["amp"])
+    return model, optimizer
 
 def create_dateset_from_config(config):
     train_data = USPatent(config["train_file"])
