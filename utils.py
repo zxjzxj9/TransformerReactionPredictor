@@ -46,7 +46,7 @@ def create_optimizer_from_config(config, model):
         model.cuda()
 
     if train_config["optimizer"] == "adam":
-        optimizer = optim.Adam(lr=train_config["lr"])
+        optimizer = optim.Adam(model.parameters(), lr=train_config["lr"])
     else:
         raise RuntimeError("Unsupported error: {}"\
             .format(train_config["optimizer"]))
