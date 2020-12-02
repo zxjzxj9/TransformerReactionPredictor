@@ -13,7 +13,7 @@ parser.add_argument("-c", "--config-file", type="str", default="params.yaml", he
 parser.add_argument("-m", "--mode", type="str", default="train", help="Training mode")
 args = parser.parse_args()
 
-def train(model, optimizer, niter):
+def train(model, optimizer, nepoch):
     pass
 
 def predict():
@@ -23,10 +23,13 @@ if __name__ == "__main__":
     conf = Config(args.config_file)
     train_data, valid_data, test_data = create_dateset_from_config(conf)
     model, vocab = create_model_from_config(conf)
+    model, optimizer = create_optimizer_from_config(conf, model)
     
     if args.mode == "train":
-        pass
+        for nepoch in conf["nepochs"]:
+            train(model, optimizer, nepoch)
     elif args.mode == "predict":
         pass
     else:
         print("Invalid mode argument: {}, exiting...".format(args.mode))
+

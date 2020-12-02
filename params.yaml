@@ -16,6 +16,7 @@ train_config:
   optimizer: 'adam'
   opt_level: 'O1'
   checkpoint: 'latest.pt'
+  nepochs: 128
 
 data_config:
   vocab_file: "./vocab.pkl"
