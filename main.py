@@ -28,7 +28,7 @@ if __name__ == "__main__":
     
     if args.mode == "train":
         for nepoch in conf["nepochs"]:
-            train(model, optimizer, nepoch， train_data, valid_data, test_data)
+            train(model, optimizer, nepoch, train_data, valid_data, test_data)
     elif args.mode == "predict":
         pass
     else:
