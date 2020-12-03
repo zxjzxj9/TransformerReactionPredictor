@@ -13,8 +13,9 @@ parser.add_argument("-c", "--config-file", type="str", default="params.yaml", he
 parser.add_argument("-m", "--mode", type="str", default="train", help="Training mode")
 args = parser.parse_args()
 
-def train(model, optimizer, nepoch):
+def train(model, optimizer, nepoch, train_data, valid_data, test_data):
     pass
+    
 
 def predict():
     pass
@@ -27,7 +28,7 @@ if __name__ == "__main__":
     
     if args.mode == "train":
         for nepoch in conf["nepochs"]:
-            train(model, optimizer, nepoch)
+            train(model, optimizer, nepoch， train_data, valid_data, test_data)
     elif args.mode == "predict":
         pass
     else:

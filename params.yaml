@@ -17,6 +17,7 @@ train_config:
   opt_level: 'O1'
   checkpoint: 'latest.pt'
   nepochs: 128
+  batch_size: 128
 
 data_config:
   vocab_file: "./vocab.pkl"

@@ -1,6 +1,5 @@
 #! /usr/bin/env python
 
-from torch._C import ErrorReport
 import yaml
 from yaml import CSafeLoader
 # import models
@@ -9,6 +8,7 @@ from models import TRPModel
 import pickle
 import torch
 import torch.optim as optim
+from torch.utils.data import DataLoader
 from apex import amp
 # from bleu import list_bleu
 
@@ -73,10 +73,19 @@ def load_checkpoints(model, path, optimizer=None):
     return model, optimizer
 
 def create_dateset_from_config(config):
+    train_config = config["train_config"]
+
     train_data = USPatent(config["train_file"])
     valid_data = USPatent(config["valid_file"])
     test_data = USPatent(config["test_file"])
     
+    train_data = DataLoader(train_data, batch_size=train_config["batch_size"], 
+        shuffle=True, num_workers=8, pin_memory=True)
+    valid_data = DataLoader(train_data, batch_size=train_config["batch_size"], 
+        shuffle=False, num_workers=8, pin_memory=True)
+    test_data = DataLoader(train_data, batch_size=train_config["batch_size"], 
+        shuffle=False, num_workers=8, pin_memory=True)
+        
     return train_data, valid_data, test_data
 
 
