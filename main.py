@@ -7,6 +7,8 @@ from .utils import Config, \
     create_model_from_config, \
     create_dateset_from_config, \
     create_optimizer_from_config
+import tqdm
+import torch.nn as nn
 
 parser = argparse.ArgumentParser("Transformer Reaction Predictor Argument Parser")
 parser.add_argument("-c", "--config-file", type="str", default="params.yaml", help="Config file path")
@@ -14,8 +16,11 @@ parser.add_argument("-m", "--mode", type="str", default="train", help="Training 
 args = parser.parse_args()
 
 def train(model, optimizer, nepoch, train_data, valid_data, test_data):
-    pass
-    
+    ce_func = nn.CrossEntropyLoss()
+    for src, tgt in tqdm.tqdm(train_data):
+        pred = model(src)
+        loss = ce(pred, tgt)
+
 
 def predict():
     pass
