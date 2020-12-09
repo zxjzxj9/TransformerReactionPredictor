@@ -22,8 +22,9 @@ parser.add_argument("-m", "--mode", type="str", default="train", help="Training 
 parser.add_argument("-s", "--summary-folder", type="str", default="./log", help="Summary writer folder")
 args = parser.parse_args()
 
-def train(model, optimizer, nepoch, train_data, valid_data, test_data, summary_writer=None):
+def train(model, optimizer, niter, train_data, valid_data, test_data, summary_writer=None):
     for src, tgt in tqdm.tqdm(train_data):
+        niter += 1
         pred = model(src)
         loss = F.binary_cross_entropy_with_logits(pred, tgt)
 
@@ -34,6 +35,9 @@ def train(model, optimizer, nepoch, train_data, valid_data, test_data, summary_w
         else:
             loss.backward()
         optimizer.step()
+
+        summary_writer.add_scalar("loss", loss.item(), niter)
+    return niter
 
 def predict():
     pass
@@ -46,8 +50,9 @@ if __name__ == "__main__":
     writer = SummaryWriter(args.summary_folder)
     
     if args.mode == "train":
+        niter = 0
         for nepoch in conf["nepochs"]:
-            train(model, optimizer, nepoch, train_data, valid_data, test_data, writer)
+            train(model, optimizer, niter, train_data, valid_data, test_data, writer)
     elif args.mode == "predict":
         pass
     else:
