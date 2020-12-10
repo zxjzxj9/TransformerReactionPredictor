@@ -11,3 +11,6 @@ The model needs SMILES to predict chemical reactions, to obtain SMILES from chem
 
 ## 2. Dataset
 The dataset used in this project can be found at [this link](https://ibm.box.com/v/ReactionSeq2SeqDataset), which is the data reference by by aforementioned paper.
+
+## 3. Model
+We use the transformer to encode SIMILES string of reactants into hidden representation, then decode the hidden representation to the products. Attention scores between reactants and products can be explained as the reaction activity sites.
