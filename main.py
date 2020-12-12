@@ -25,8 +25,10 @@ args = parser.parse_args()
 def train(model, optimizer, niter, train_data, valid_data, test_data, summary_writer=None):
     for src, tgt in tqdm.tqdm(train_data):
         niter += 1
-        pred = model(src)
-        loss = F.binary_cross_entropy_with_logits(pred, tgt)
+        src_mask = (src > 0).t()
+        tgt_mask = (tgt > 0).t()
+        pred = model(src, src_mask, tgt, tgt_mask)
+        loss = F.cross_entropy(pred, tgt, ignore_index=0) # ignore <pad> token
 
         optimizer.zero_grad()
         if hasattr(optimizer, "scale_loss"):
