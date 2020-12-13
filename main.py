@@ -29,7 +29,7 @@ def train(model, optimizer, niter, train_data, valid_data, test_data, summary_wr
         tgt_mask = (tgt > 0).t()
         pred = model(src, src_mask, tgt, tgt_mask)
         loss = F.cross_entropy(pred, tgt, ignore_index=0) # ignore <pad> token
-
+ 
         optimizer.zero_grad()
         if hasattr(optimizer, "scale_loss"):
             with optimizer.scale_loss(loss) as scaled_loss:

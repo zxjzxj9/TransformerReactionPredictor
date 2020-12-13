@@ -8,6 +8,7 @@ model_config:
   nff: 2048 # number of feed forward layer
   dropout: 0.1 # drop ratio
   act_fn: 'relu' # activation function
+  beam_size: -1
 
 train_config:
   use_cuda: True

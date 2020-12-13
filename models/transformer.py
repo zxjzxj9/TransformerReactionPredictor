@@ -39,12 +39,14 @@ class TRPModel(nn.Module):
             and NxS, NxT as padding mask layout
     """
     
-    def __init__(self, ntokens, nfeat, nhead, nlayer, nff, maxlen=64, dropout=0.1, act_fn='relu'):
+    def __init__(self, ntokens, nfeat, nhead, nlayer, nff, maxlen=64, dropout=0.1, act_fn='relu', beam_size=-1):
         super().__init__()
 
         self.token_embed = nn.Embedding(ntokens, nfeat)
         self.src_pos_embed = PosEmbedding(maxlen, nfeat)
         self.tgt_pos_embed = PosEmbedding(maxlen, nfeat)
+
+        self.beam_size = beam_size
 
         encoder_layer = nn.TransformerEncoderLayer(nfeat, nhead, nff, dropout, act_fn)
         self.encoder = nn.TransformerEncoder(encoder_layer, nlayer, nn.LayerNorm(nfeat))
@@ -67,7 +69,10 @@ class TRPModel(nn.Module):
                 memory_key_padding_mask = src_mask)
             return feat
         else:
-            pass
+            # one decode once
+            src_token_feat = self.token_embed(src) # src SxN
+            # if beam size is -1, then use greedy decode
+            # else use beam decoder
 
 
 if __name__ == "__main__":
