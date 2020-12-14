@@ -59,9 +59,9 @@ class TRPModel(nn.Module):
             src_token_feat = self.token_embed(src) # src SxN
             tgt_token_feat = self.token_embed(tgt) # tgt SxN
             sz, nb = src.size() 
-            idx = torch.arange(sz).unsqueeze(-1) # Sx1
-            src_pos_feat = self.src_pos_embed(idx)
-            tgt_pos_feat = self.tgt_pos_embed(idx)
+            idx = torch.arange(sz).unsqueeze(-1).to(src.device) # Sx1
+            src_pos_feat = self.src_pos_embed(idx).to(src.device)
+            tgt_pos_feat = self.tgt_pos_embed(idx).to(tgt.device)
             src_feat = src_token_feat + src_pos_feat # add two embeddings
             tgt_feat = tgt_token_feat + tgt_pos_feat 
             memory = self.encoder(src_feat, src_key_padding_mask = src_mask)
@@ -73,6 +73,17 @@ class TRPModel(nn.Module):
             src_token_feat = self.token_embed(src) # src SxN
             # if beam size is -1, then use greedy decode
             # else use beam decoder
+            sz, nb = src.size() 
+            idx = torch.arange(sz).unsqueeze(-1).to(src.device) # Sx1
+            src_pos_feat = self.src_pos_embed(idx)
+            tgt_pos_feat = self.tgt_pos_embed(idx)
+            src_feat = src_token_feat + src_pos_feat # add two embeddings
+            memory = self.encoder(src_feat, src_key_padding_mask = src_mask)
+            # <GO> is #4 token
+            if self.beam_size == -1:
+                pass
+            else:
+                pass
 
 
 if __name__ == "__main__":
