@@ -53,7 +53,7 @@ class TRPModel(nn.Module):
         decoder_layer = nn.TransformerDecoderLayer(nfeat, nhead, nff, dropout, act_fn)
         self.decoder = nn.TransformerDecoder(decoder_layer, nlayer, nn.LayerNorm(nfeat))
 
-    def forward(self, src, src_mask, tgt = None, tgt_mask = None):
+    def forward(self, src, src_mask, tgt = None, tgt_mask = None, max_step=64):
         
         if self.training:
             src_token_feat = self.token_embed(src) # src SxN
@@ -76,13 +76,24 @@ class TRPModel(nn.Module):
             sz, nb = src.size() 
             idx = torch.arange(sz).unsqueeze(-1).to(src.device) # Sx1
             src_pos_feat = self.src_pos_embed(idx)
-            tgt_pos_feat = self.tgt_pos_embed(idx)
             src_feat = src_token_feat + src_pos_feat # add two embeddings
             memory = self.encoder(src_feat, src_key_padding_mask = src_mask)
-            # <GO> is #4 token
             if self.beam_size == -1:
-                pass
+                # Do greedy decode, suppose src, dst on same device
+                idx = torch.arange(max_step).unsqueeze(-1).to(src.device) # Sx1
+                tgt_pos_feat = self.tgt_pos_embed(idx)
+                tgt = torch.zeros(max_step, nb).to(src.device)
+                tgt[0, :] = 4 # <GO> is #4 token
+                for step in range(1, max_step):
+                    tgt_feat = self.token_embed(tgt) + tgt_pos_feat
+                    tgt_mask = (tgt > 0).transpose(0, 1)
+                    feat = self.decoder(tgt_feat, memory, tgt_key_padding_mask = tgt_mask, 
+                        memory_key_padding_mask = src_mask) # SxNxF
+                    # current step input is the max of the last step
+                    tgt[step, :] = feat[step - 1, :, :].argmax(-1)
+                return tgt
             else:
+                # Do beam decode
                 pass
 
 
