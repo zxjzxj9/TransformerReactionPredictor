@@ -93,8 +93,13 @@ class TRPModel(nn.Module):
                     tgt[step, :] = feat[step - 1, :, :].argmax(-1)
                 return tgt
             else:
-                # Do beam decode
-                pass
+                # Do beam decode, suppose the batch_size == 1
+                sz, nb = src.size() 
+                if nb != 1: raise RuntimeError("For Beam search, batch size must equal to 1")
+                src = src.repeat(1, self.beam_size)
+                log_prob = torch.zeros(self.beam_size).to(src.device)
+                
+
 
 
 if __name__ == "__main__":
