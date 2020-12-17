@@ -98,7 +98,20 @@ class TRPModel(nn.Module):
                 if nb != 1: raise RuntimeError("For Beam search, batch size must equal to 1")
                 src = src.repeat(1, self.beam_size)
                 log_prob = torch.zeros(self.beam_size).to(src.device)
-                
+                tgt = torch.zeros(max_step, nb).to(src.device)
+                tgt[0, :] = 4 # <GO> is #4 token
+
+                for step in range(1, max_step):
+                    tgt_feat = self.token_embed(tgt) + tgt_pos_feat
+                    tgt_mask = (tgt > 0).transpose(0, 1)
+                    feat = self.decoder(tgt_feat, memory, tgt_key_padding_mask = tgt_mask, 
+                        memory_key_padding_mask = src_mask) # SxNxF
+                    # current step input is the max of the last step
+                    tgt[step, :] = feat[step - 1, :, :].argmax(-1)
+                    # need to add codes to deal with logprob
+
+
+
 
 
 
