@@ -97,6 +97,8 @@ class TRPModel(nn.Module):
                 sz, nb = src.size() 
                 if nb != 1: raise RuntimeError("For Beam search, batch size must equal to 1")
                 src = src.repeat(1, self.beam_size)
+                idx = torch.arange(max_step).unsqueeze(-1).to(src.device) # Sx1
+                tgt_pos_feat = self.tgt_pos_embed(idx)
                 log_prob = torch.zeros(self.beam_size).to(src.device)
                 tgt = torch.zeros(max_step, nb).to(src.device)
                 tgt[0, :] = 4 # <GO> is #4 token
