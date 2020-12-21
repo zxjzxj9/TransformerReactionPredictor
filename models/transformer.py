@@ -111,10 +111,7 @@ class TRPModel(nn.Module):
                     # current step input is the max of the last step
                     tgt[step, :] = feat[step - 1, :, :].argmax(-1)
                     # need to add codes to deal with logprob
-
-
-
-
+                    prob = tgt[step, :].softmax()
 
 
 if __name__ == "__main__":
