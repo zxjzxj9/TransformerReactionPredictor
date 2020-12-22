@@ -99,7 +99,7 @@ class TRPModel(nn.Module):
                 src = src.repeat(1, self.beam_size)
                 idx = torch.arange(max_step).unsqueeze(-1).to(src.device) # Sx1
                 tgt_pos_feat = self.tgt_pos_embed(idx)
-                log_prob = torch.zeros(self.beam_size).to(src.device)
+                log_prob = torch.zeros(1, self.beam_size).to(src.device)
                 tgt = torch.zeros(max_step, nb).to(src.device)
                 tgt[0, :] = 4 # <GO> is #4 token
 
@@ -111,7 +111,10 @@ class TRPModel(nn.Module):
                     # current step input is the max of the last step
                     tgt[step, :] = feat[step - 1, :, :].argmax(-1)
                     # need to add codes to deal with logprob
-                    prob = tgt[step, :].softmax()
+                    log_prob_t = tgt[step, :].log_softmax()
+                    # now we have 1 x beam_size x feat log_prob, and it with 1 x beam_size log_prob
+                    log_prob_t = log_prob_t + log_prob.unsqueeze(-1)
+                    
 
 
 if __name__ == "__main__":
