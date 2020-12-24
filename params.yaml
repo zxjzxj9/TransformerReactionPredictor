@@ -19,6 +19,7 @@ train_config:
   checkpoint: 'latest.pt'
   nepochs: 128
   batch_size: 128
+  nsave: 8 # save every 8 epochs
 
 data_config:
   vocab_file: "./vocab.pkl"
