@@ -6,7 +6,8 @@ import argparse
 from .utils import Config, \
     create_model_from_config, \
     create_dateset_from_config, \
-    create_optimizer_from_config
+    create_optimizer_from_config, \
+    save_checkpoints
 import tqdm
 import torch.nn as nn
 import torch.nn.functional as F
@@ -52,9 +53,11 @@ if __name__ == "__main__":
     
     if args.mode == "train":
         niter = 0
-        for nepoch in conf["nepochs"]:
+        for nepoch in conf["train_config"]["nepochs"]:
             # update iteration number
             niter = train(model, optimizer, niter, train_data, valid_data, test_data, writer)
+            if (niter + 1) % conf["train_config"]["nsave"]:
+                save_checkpoints(model, "model.pt", optimizer, niter)
     elif args.mode == "predict":
         pass
     else:
