@@ -52,6 +52,7 @@ if __name__ == "__main__":
     writer = SummaryWriter(args.summary_folder)
     
     if args.mode == "train":
+        print("Start training mode....")
         niter = 0
         for nepoch in conf["train_config"]["nepochs"]:
             # update iteration number
@@ -62,4 +63,3 @@ if __name__ == "__main__":
         pass
     else:
         print("Invalid mode argument: {}, exiting...".format(args.mode))
-
