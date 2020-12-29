@@ -38,6 +38,7 @@ def train(model, optimizer, niter, train_data, valid_data, test_data, summary_wr
             loss.backward()
         optimizer.step()
 
+        print("In iteration: {:6d}, loss: {:12.6f}")
         summary_writer.add_scalar("loss", loss.item(), niter)
     return niter
 
