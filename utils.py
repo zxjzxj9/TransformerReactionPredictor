@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 
 import yaml
-from yaml import CSafeLoader
+from yaml import CSafeLoader, Loader
 # import models
 from preprocess import Vocab, USPatent
 from models import TRPModel
@@ -18,7 +18,7 @@ class Config:
 
         self.folder = folder
         with open(folder, "r") as f:
-            self.config = yaml.load(f, Loader=CSafeLoader)
+            self.config = yaml.load(f, Loader=Loader)
 
     def __getitem__(self, key):
         return self.config[key]
@@ -46,7 +46,7 @@ def create_optimizer_from_config(config, model):
         model.cuda()
 
     if train_config["optimizer"] == "adam":
-        optimizer = optim.Adam(model.parameters(), lr=train_config["lr"])
+        optimizer = optim.Adam(model.parameters(), lr=float(train_config["lr"]))
     else:
         raise RuntimeError("Unsupported error: {}"\
             .format(train_config["optimizer"]))
@@ -74,10 +74,10 @@ def load_checkpoints(model, path, optimizer=None):
 
 def create_dateset_from_config(config):
     train_config = config["train_config"]
-
-    train_data = USPatent(config["train_file"])
-    valid_data = USPatent(config["valid_file"])
-    test_data = USPatent(config["test_file"])
+    data_config = config["data_config"]
+    train_data = USPatent(data_config["train_file"])
+    valid_data = USPatent(data_config["valid_file"])
+    test_data = USPatent(data_config["test_file"])
     
     train_data = DataLoader(train_data, batch_size=train_config["batch_size"], 
         shuffle=True, num_workers=8, pin_memory=True)

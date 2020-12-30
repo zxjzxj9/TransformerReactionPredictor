@@ -3,7 +3,7 @@
 import os
 import sys
 import argparse
-from .utils import Config, \
+from utils import Config, \
     create_model_from_config, \
     create_dateset_from_config, \
     create_optimizer_from_config, \
@@ -18,9 +18,9 @@ from torch.utils.tensorboard import SummaryWriter, writer
 
 
 parser = argparse.ArgumentParser("Transformer Reaction Predictor Argument Parser")
-parser.add_argument("-c", "--config-file", type="str", default="params.yaml", help="Config file path")
-parser.add_argument("-m", "--mode", type="str", default="train", help="Training mode")
-parser.add_argument("-s", "--summary-folder", type="str", default="./log", help="Summary writer folder")
+parser.add_argument("-c", "--config-file", type=str, default="params.yaml", help="Config file path")
+parser.add_argument("-m", "--mode", type=str, default="train", help="Training mode")
+parser.add_argument("-s", "--summary-folder", type=str, default="./log", help="Summary writer folder")
 args = parser.parse_args()
 
 def train(model, optimizer, niter, train_data, valid_data, test_data, summary_writer=None):
@@ -56,7 +56,7 @@ if __name__ == "__main__":
     if args.mode == "train":
         print("Start training mode....")
         niter = 0
-        for nepoch in conf["train_config"]["nepochs"]:
+        for nepoch in range(conf["train_config"]["nepochs"]):
             # update iteration number
             niter = train(model, optimizer, niter, train_data, valid_data, test_data, writer)
             if (niter + 1) % conf["train_config"]["nsave"]:
