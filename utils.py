@@ -72,6 +72,14 @@ def load_checkpoints(model, path, optimizer=None):
     if state["amp"] is not None: amp.load_state_dict(state["amp"])
     return model, optimizer
 
+def collate_fn(data):
+    print(len(data))
+    # src, tgt = zip(*data)
+    # src = torch.stack(src, dim=1)
+    # tgt = torch.stack(tgt, dim=1)
+    # print(src, tgt)
+    return src, tgt
+
 def create_dateset_from_config(config):
     train_config = config["train_config"]
     data_config = config["data_config"]
@@ -80,11 +88,11 @@ def create_dateset_from_config(config):
     test_data = USPatent(data_config["test_file"])
     
     train_data = DataLoader(train_data, batch_size=train_config["batch_size"], 
-        shuffle=True, num_workers=8, pin_memory=True)
+        shuffle=True, collate_fn=collate_fn, num_workers=8, pin_memory=True)
     valid_data = DataLoader(train_data, batch_size=train_config["batch_size"], 
-        shuffle=False, num_workers=8, pin_memory=True)
+        shuffle=False, collate_fn=collate_fn, num_workers=8, pin_memory=True)
     test_data = DataLoader(train_data, batch_size=train_config["batch_size"], 
-        shuffle=False, num_workers=8, pin_memory=True)
+        shuffle=False, collate_fn=collate_fn, num_workers=8, pin_memory=True)
         
     return train_data, valid_data, test_data
 

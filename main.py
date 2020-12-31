@@ -25,6 +25,11 @@ args = parser.parse_args()
 
 def train(model, optimizer, niter, train_data, valid_data, test_data, summary_writer=None):
     for src, tgt in tqdm.tqdm(train_data):
+        # print(src, tgt)
+        # by default we use GPU
+        src = torch.tensor(src, device='cuda:0')
+        tgt = torch.tensor(tgt, device='cuda:0')
+
         niter += 1
         src_mask = (src > 0).t()
         tgt_mask = (tgt > 0).t()
