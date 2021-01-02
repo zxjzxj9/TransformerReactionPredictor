@@ -20,6 +20,7 @@ train_config:
   nepochs: 128
   batch_size: 128
   nsave: 8 # save every 8 epochs
+  nworkers: 0 # number of workers
 
 data_config:
   vocab_file: "./vocab.pkl"

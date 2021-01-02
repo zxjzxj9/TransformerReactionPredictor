@@ -74,9 +74,11 @@ def load_checkpoints(model, path, optimizer=None):
 
 def collate_fn(data):
     print(len(data))
-    # src, tgt = zip(*data)
-    # src = torch.stack(src, dim=1)
-    # tgt = torch.stack(tgt, dim=1)
+    # import sys; sys.exit()
+    src, tgt = zip(*data)
+    src = torch.stack(src, dim=1)
+    tgt = torch.stack(tgt, dim=1)
+    # print(src)
     # print(src, tgt)
     return src, tgt
 
@@ -88,11 +90,11 @@ def create_dateset_from_config(config):
     test_data = USPatent(data_config["test_file"])
     
     train_data = DataLoader(train_data, batch_size=train_config["batch_size"], 
-        shuffle=True, collate_fn=collate_fn, num_workers=8, pin_memory=True)
+        shuffle=True, collate_fn=collate_fn, num_workers=train_config["nworkers"], pin_memory=True)
     valid_data = DataLoader(train_data, batch_size=train_config["batch_size"], 
-        shuffle=False, collate_fn=collate_fn, num_workers=8, pin_memory=True)
+        shuffle=False, collate_fn=collate_fn, num_workers=train_config["nworkers"], pin_memory=True)
     test_data = DataLoader(train_data, batch_size=train_config["batch_size"], 
-        shuffle=False, collate_fn=collate_fn, num_workers=8, pin_memory=True)
+        shuffle=False, collate_fn=collate_fn, num_workers=train_config["nworkers"], pin_memory=True)
         
     return train_data, valid_data, test_data
 

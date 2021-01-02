@@ -7,6 +7,7 @@
 import os
 import pandas as pd
 import tqdm
+import torch
 from torch.utils.data import Dataset
 from .utils import Vocab
 
@@ -90,6 +91,9 @@ class USPatent(Dataset):
         else:
             tgt_ret = tgt_ret[:self.maxlen]
 
+        src_ret = torch.tensor(src_ret)
+        tgt_ret = torch.tensor(tgt_ret)
+        # print(src_ret.shape, tgt_ret.shape)
         return src_ret, tgt_ret
 
 if __name__ == "__main__":
