@@ -24,6 +24,7 @@ parser.add_argument("-s", "--summary-folder", type=str, default="./log", help="S
 args = parser.parse_args()
 
 def train(model, optimizer, niter, train_data, valid_data, test_data, summary_writer=None):
+    model.train()
     for src, tgt in tqdm.tqdm(train_data):
         # print(src, tgt)
         # by default we use GPU
@@ -34,7 +35,7 @@ def train(model, optimizer, niter, train_data, valid_data, test_data, summary_wr
         src_mask = (src > 0).t()
         tgt_mask = (tgt > 0).t()
         pred = model(src, src_mask, tgt, tgt_mask)
-        loss = F.cross_entropy(pred, tgt, ignore_index=0, reduction='mean') # ignore <pad> token
+         loss = F.cross_entropy(pred, tgt, ignore_index=0, reduction='mean') # ignore <pad> token
         optimizer.zero_grad()
         if hasattr(optimizer, "scale_loss"):
             with optimizer.scale_loss(loss) as scaled_loss:
@@ -48,8 +49,8 @@ def train(model, optimizer, niter, train_data, valid_data, test_data, summary_wr
     print("")
     return niter
 
-def predict():
-    pass
+def predict(model):
+    model.eval()
 
 if __name__ == "__main__":
     conf = Config(args.config_file)
