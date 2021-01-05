@@ -53,6 +53,8 @@ class TRPModel(nn.Module):
         decoder_layer = nn.TransformerDecoderLayer(nfeat, nhead, nff, dropout, act_fn)
         self.decoder = nn.TransformerDecoder(decoder_layer, nlayer, nn.LayerNorm(nfeat))
 
+        self.proj = nn.Linear(nfeat, ntokens)
+
     def forward(self, src, src_mask, tgt = None, tgt_mask = None, max_step=64):
         
         if self.training:
@@ -67,6 +69,7 @@ class TRPModel(nn.Module):
             memory = self.encoder(src_feat, src_key_padding_mask = src_mask)
             feat = self.decoder(tgt_feat, memory, tgt_key_padding_mask = tgt_mask, 
                 memory_key_padding_mask = src_mask)
+            feat = self.proj(feat)
             return feat
         else:
             # one decode once
@@ -89,6 +92,7 @@ class TRPModel(nn.Module):
                     tgt_mask = (tgt > 0).transpose(0, 1)
                     feat = self.decoder(tgt_feat, memory, tgt_key_padding_mask = tgt_mask, 
                         memory_key_padding_mask = src_mask) # SxNxF
+                    feat = self.proj(feat)
                     # current step input is the max of the last step
                     tgt[step, :] = feat[step - 1, :, :].argmax(-1)
                 return tgt
@@ -108,6 +112,7 @@ class TRPModel(nn.Module):
                     tgt_mask = (tgt > 0).transpose(0, 1)
                     feat = self.decoder(tgt_feat, memory, tgt_key_padding_mask = tgt_mask, 
                         memory_key_padding_mask = src_mask) # SxNxF
+                    feat = self.proj(feat)
                     # current step input is the max of the last step
                     tgt[step, :] = feat[step - 1, :, :].argmax(-1)
                     # need to add codes to deal with logprob

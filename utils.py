@@ -73,7 +73,7 @@ def load_checkpoints(model, path, optimizer=None):
     return model, optimizer
 
 def collate_fn(data):
-    print(len(data))
+    # print(len(data))
     # import sys; sys.exit()
     src, tgt = zip(*data)
     src = torch.stack(src, dim=1)
