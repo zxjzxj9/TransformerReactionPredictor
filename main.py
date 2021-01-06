@@ -35,6 +35,7 @@ def train(model, optimizer, niter, train_data, valid_data, test_data, summary_wr
         src_mask = (src > 0).t()
         tgt_mask = (tgt > 0).t()
         pred = model(src, src_mask, tgt, tgt_mask)
+        pred = pred.permute(0, 2, 1)
         loss = F.cross_entropy(pred, tgt, ignore_index=0, reduction='mean') # ignore <pad> token
         optimizer.zero_grad()
         if hasattr(optimizer, "scale_loss"):
@@ -44,7 +45,7 @@ def train(model, optimizer, niter, train_data, valid_data, test_data, summary_wr
             loss.backward()
         optimizer.step()
 
-        print("In iteration: {:6d}, loss: {:12.6f}", end="\r")
+        # print("In iteration: {:6d}, loss: {:12.6f}", end="\r")
         summary_writer.add_scalar("loss", loss.item(), niter)
     print("")
     return niter
