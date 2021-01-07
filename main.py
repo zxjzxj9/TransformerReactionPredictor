@@ -25,7 +25,8 @@ args = parser.parse_args()
 
 def train(model, optimizer, niter, train_data, valid_data, test_data, summary_writer=None):
     model.train()
-    for src, tgt in tqdm.tqdm(train_data):
+    pbar = tqdm.tqdm(train_data)
+    for src, tgt in pbar:
         # print(src, tgt)
         # by default we use GPU
         src = src.to(device='cuda:0')
@@ -44,8 +45,7 @@ def train(model, optimizer, niter, train_data, valid_data, test_data, summary_wr
         else:
             loss.backward()
         optimizer.step()
-
-        # print("In iteration: {:6d}, loss: {:12.6f}", end="\r")
+        pbar.set_description("In iteration: {:06d}, loss: {:12.6f}".format(niter, loss))
         summary_writer.add_scalar("loss", loss.item(), niter)
     print("")
     return niter
