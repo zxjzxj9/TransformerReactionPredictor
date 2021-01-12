@@ -13,7 +13,7 @@ model_config:
 train_config:
   use_cuda: True
   use_fp16: True
-  lr: 1e-3
+  lr: 1e-4
   optimizer: 'adam'
   opt_level: 'O1'
   checkpoint: 'latest.pt'
