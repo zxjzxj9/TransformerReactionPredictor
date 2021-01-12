@@ -32,12 +32,19 @@ def train(model, optimizer, niter, train_data, valid_data, test_data, summary_wr
         src = src.to(device='cuda:0')
         tgt = tgt.to(device='cuda:0')
 
+        print(src)
+        print(tgt)
+
         niter += 1
         src_mask = (src > 0).t()
         tgt_mask = (tgt > 0).t()
         pred = model(src, src_mask, tgt, tgt_mask)
-        pred = pred.permute(0, 2, 1)
-        loss = F.cross_entropy(pred, tgt, ignore_index=0, reduction='mean') # ignore <pad> token
+        # print(pred)
+        pred = pred.permute(0, 2, 1).log_softmax(dim=1)
+        # print(pred)
+        loss = F.nll_loss(pred, tgt, ignore_index=0, reduction='mean') # ignore <pad> token
+        # print(loss)
+        # import sys; sys.exit()
         optimizer.zero_grad()
         if hasattr(optimizer, "scale_loss"):
             with optimizer.scale_loss(loss) as scaled_loss:
