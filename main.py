@@ -32,12 +32,12 @@ def train(model, optimizer, niter, train_data, valid_data, test_data, summary_wr
         src = src.to(device='cuda:0')
         tgt = tgt.to(device='cuda:0')
 
-        print(src)
-        print(tgt)
+        # print(src)
+        # print(tgt)
 
         niter += 1
-        src_mask = (src > 0).t()
-        tgt_mask = (tgt > 0).t()
+        src_mask = (src == 0).t()
+        tgt_mask = (tgt == 0).t()
         pred = model(src, src_mask, tgt, tgt_mask)
         # print(pred)
         pred = pred.permute(0, 2, 1).log_softmax(dim=1)

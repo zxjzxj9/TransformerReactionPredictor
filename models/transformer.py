@@ -66,10 +66,14 @@ class TRPModel(nn.Module):
             tgt_pos_feat = self.tgt_pos_embed(idx).to(tgt.device)
             src_feat = src_token_feat + src_pos_feat # add two embeddings
             tgt_feat = tgt_token_feat + tgt_pos_feat 
+            # print("src feat:", src_feat)
             memory = self.encoder(src_feat, src_key_padding_mask = src_mask)
+            # print(memory)
             feat = self.decoder(tgt_feat, memory, tgt_key_padding_mask = tgt_mask, 
                 memory_key_padding_mask = src_mask)
+            # print(feat)
             feat = self.proj(feat)
+            # print(feat)
             return feat
         else:
             # one decode once
