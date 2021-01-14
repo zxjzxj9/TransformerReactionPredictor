@@ -11,8 +11,8 @@ from utils import Config, \
 import tqdm
 import torch.nn as nn
 import torch.nn.functional as F
-import torch
-import apex
+# import torch
+# import apex
 
 from torch.utils.tensorboard import SummaryWriter, writer
 
