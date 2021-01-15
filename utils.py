@@ -60,8 +60,8 @@ def create_optimizer_from_config(config, model):
 def save_checkpoints(model, path, optimizer=None, niters=0):
     torch.save({
         "model": model.state_dict(),
-        "optimizer": optimizer,
-        "amp": amp,
+        "optimizer": optimizer.state_dict(),
+        "amp": amp.state_dict(),
         "niters": niters,
     }, path)
 
