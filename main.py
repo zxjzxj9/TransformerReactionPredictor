@@ -23,7 +23,7 @@ parser.add_argument("-m", "--mode", type=str, default="train", help="Training mo
 parser.add_argument("-s", "--summary-folder", type=str, default="./log", help="Summary writer folder")
 args = parser.parse_args()
 
-def train(model, optimizer, niter, train_data, valid_data, test_data, summary_writer=None):
+def train(model, optimizer, niter, train_data, summary_writer=None):
     model.train()
     pbar = tqdm.tqdm(train_data)
     for src, tgt in pbar:
@@ -57,8 +57,18 @@ def train(model, optimizer, niter, train_data, valid_data, test_data, summary_wr
     print("")
     return niter
 
-def predict(model):
+def predict(model, test_data):
     model.eval()
+    pbar = tqdm.tqdm(train_data)
+    for src, tgt in pbar:
+        src = src.to(device='cuda:0')
+        tgt = tgt.to(device='cuda:0')
+
+        src_mask = (src == 0).t()
+        tgt_mask = (tgt == 0).t()
+        
+        # need to add precition method
+        pred = model(src, src_mask, tgt, tgt_mask)
 
 if __name__ == "__main__":
     conf = Config(args.config_file)
