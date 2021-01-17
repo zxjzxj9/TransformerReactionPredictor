@@ -57,18 +57,26 @@ def train(model, optimizer, niter, train_data, summary_writer=None):
     print("")
     return niter
 
-def predict(model, test_data):
+def predict(model, test_data, niter):
     model.eval()
-    pbar = tqdm.tqdm(train_data)
+    pbar = tqdm.tqdm(test_data)
+    avg_loss = 0.0
+    tot_sz = 0.0
     for src, tgt in pbar:
         src = src.to(device='cuda:0')
         tgt = tgt.to(device='cuda:0')
 
         src_mask = (src == 0).t()
         tgt_mask = (tgt == 0).t()
-        
+
         # need to add precition method
         pred = model(src, src_mask, tgt, tgt_mask)
+        # calculate the NLL loss
+        loss = F.nll_loss(pred, tgt, ignore_index=0, reduction='mean') # ignore <pad> token
+        avg_loss += loss.item()
+        tot_sz += src.size(1) # L x N x F
+    summary_writer.add_scalar("perplexity", avg_loss/tot_sz, niter)
+
 
 if __name__ == "__main__":
     conf = Config(args.config_file)
