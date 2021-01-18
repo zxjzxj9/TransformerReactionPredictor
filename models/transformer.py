@@ -128,6 +128,7 @@ class TRPModel(nn.Module):
 
 if __name__ == "__main__":
     model = TRPModel(345, 256, 8, 3, 1024)
+    model.eval()
     src = torch.randint(0, 344, (64, 8))
     tgt = torch.randint(0, 344, (64, 8))
     # print(src, tgt)
