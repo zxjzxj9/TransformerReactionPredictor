@@ -89,7 +89,7 @@ class TRPModel(nn.Module):
                 # Do greedy decode, suppose src, dst on same device
                 idx = torch.arange(max_step).unsqueeze(-1).to(src.device) # Sx1
                 tgt_pos_feat = self.tgt_pos_embed(idx)
-                tgt = torch.zeros(max_step, nb).to(src.device)
+                tgt = torch.zeros(max_step, nb, dtype=torch.int64).to(src.device)
                 tgt[0, :] = 4 # <GO> is #4 token
                 for step in range(1, max_step):
                     tgt_feat = self.token_embed(tgt) + tgt_pos_feat
@@ -108,7 +108,7 @@ class TRPModel(nn.Module):
                 idx = torch.arange(max_step).unsqueeze(-1).to(src.device) # Sx1
                 tgt_pos_feat = self.tgt_pos_embed(idx)
                 log_prob = torch.zeros(1, self.beam_size).to(src.device)
-                tgt = torch.zeros(max_step, nb).to(src.device)
+                tgt = torch.zeros(max_step, nb, dtype=torch.int64).to(src.device)
                 tgt[0, :] = 4 # <GO> is #4 token
 
                 for step in range(1, max_step):
