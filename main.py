@@ -72,7 +72,7 @@ def predict(model, test_data, niter):
         # need to add precition method
         pred = model(src, src_mask, tgt, tgt_mask)
         # calculate the NLL loss
-        loss = F.nll_loss(pred, tgt, ignore_index=0, reduction='mean') # ignore <pad> token
+        loss = F.nll_loss(pred, tgt, ignore_index=0, reduction='sum') # ignore <pad> token
         avg_loss += loss.item()
         tot_sz += src.size(1) # L x N x F
     summary_writer.add_scalar("perplexity", avg_loss/tot_sz, niter)
