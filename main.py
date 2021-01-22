@@ -76,6 +76,7 @@ def predict(model, test_data, niter):
         avg_loss += loss.item()
         tot_sz += src.size(1) # L x N x F
     summary_writer.add_scalar("perplexity", avg_loss/tot_sz, niter)
+    return avg_loss
 
 
 if __name__ == "__main__":
@@ -93,7 +94,9 @@ if __name__ == "__main__":
             niter = train(model, optimizer, niter, train_data, valid_data, test_data, writer)
             if (niter + 1) % conf["train_config"]["nsave"]:
                 save_checkpoints(model, "model.pt", optimizer, niter)
+            # do eval at the end of each epoch
+            ppl = predict(model, valid_data, nepoch)
     elif args.mode == "predict":
-        pass
+        ppl = predict(model, test_data, 0)
     else:
         print("Invalid mode argument: {}, exiting...".format(args.mode))
