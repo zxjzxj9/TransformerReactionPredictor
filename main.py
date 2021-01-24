@@ -75,6 +75,7 @@ def predict(model, test_data, niter):
         loss = F.nll_loss(pred, tgt, ignore_index=0, reduction='sum') # ignore <pad> token
         avg_loss += loss.item()
         tot_sz += src.size(1) # L x N x F
+    print("Perplexity: {:12.6}".format(avg_loss/tot_sz))
     summary_writer.add_scalar("perplexity", avg_loss/tot_sz, niter)
     return avg_loss
 
