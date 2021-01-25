@@ -71,6 +71,8 @@ def predict(model, test_data, niter):
 
         # need to add precition method
         pred = model(src, src_mask, tgt, tgt_mask)
+        # Add log_softmax (not sure if it is right)
+        pred = pred.permute(0, 2, 1).log_softmax(dim=1)
         # calculate the NLL loss
         loss = F.nll_loss(pred, tgt, ignore_index=0, reduction='sum') # ignore <pad> token
         avg_loss += loss.item()
